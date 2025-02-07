@@ -8,7 +8,7 @@ local Camera = Workspace.CurrentCamera
 local LocalPlayer = Players.LocalPlayer
 
 -- Variables
-local silentAimActive = true
+local silentAimActive = false
 local currentTarget = nil -- Current target for ESP
 
 -- Function to get the nearest target's head
