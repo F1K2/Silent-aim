@@ -34,28 +34,33 @@ local function getNearestHead()
 end
 
 -- Silent aim functionality with headshots
-UserInputService.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 and silentAimActive then
-        local targetHead, closestPlayer = getNearestHead()
-        if targetHead then
-            local aimPosition = targetHead.Position
-            Camera.CFrame = CFrame.new(Camera.CFrame.Position, aimPosition)
-            ReplicatedStorage.Remotes.Attack:FireServer(targetHead)
+local function silentAimHandler()
+    UserInputService.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 and silentAimActive then
+            local targetHead, closestPlayer = getNearestHead()
+            if targetHead then
+                local aimPosition = targetHead.Position
+                Camera.CFrame = CFrame.new(Camera.CFrame.Position, aimPosition)
+                ReplicatedStorage.Remotes.Attack:FireServer(targetHead)
+            end
         end
-    end
-end)
+    end)
+end
 
--- Toggle silent aim with CTRL key
-UserInputService.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == Enum.KeyCode.LeftControl then
-        silentAimActive = false
-    end
-end)
+-- Activation du Silent Aim via le toggle de l'UI
+local function activateSilentAim()
+    silentAimActive = true
+    silentAimHandler() -- Commence à écouter pour les clics de souris si activé
+    print("Silent Aim activated")
+end
 
-UserInputService.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == Enum.KeyCode.LeftControl then
-        silentAimActive = true
-    end
-end)
+local function deactivateSilentAim()
+    silentAimActive = false
+    print("Silent Aim deactivated")
+end
 
-print("Silent Aim and ESP Script for Rivals loaded successfully.")
+-- Exposer les fonctions pour être appelées depuis l'UI
+return {
+    activateSilentAim = activateSilentAim,
+    deactivateSilentAim = deactivateSilentAim
+}
